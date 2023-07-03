@@ -23,6 +23,8 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
     setFile(undefined);
   };
 
+  const authorizationToken = localStorage.getItem("authorization_token");
+
   const uploadFile = async () => {
     console.log("uploadFile to", url);
 
@@ -30,9 +32,14 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
     const response = await axios({
       method: "GET",
       url,
-      auth: {
-        username: import.meta.env.VITE_GITHUB_LOGIN,
-        password: import.meta.env.VITE_PASSWORD,
+      // auth: {
+      //   username: import.meta.env.VITE_GITHUB_LOGIN,
+      //   password: import.meta.env.VITE_PASSWORD,
+      // },
+      headers: {
+        ...(authorizationToken
+          ? { Authorization: `Basic ${authorizationToken}` }
+          : {}),
       },
       params: {
         name: encodeURIComponent(file?.name as string),
